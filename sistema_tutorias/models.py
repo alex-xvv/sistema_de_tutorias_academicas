@@ -57,7 +57,7 @@ class Tutoria(models.Model):
         ('presencial', 'Presencial'),
         ('virtual', 'Virtual'),
     )
-    docente = models.ForeignKey(Persona, on_delete=models.CASCADE, to_field='cargo')
+    docente = models.ForeignKey(Persona, limit_choices_to={'cargo': 'docente'}, on_delete=models.CASCADE)
     asignatura = models.ForeignKey(Asignatura, on_delete=models.CASCADE)
     horario=models.DateField()
     tema=models.CharField(max_length=60)

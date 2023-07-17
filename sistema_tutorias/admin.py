@@ -13,6 +13,6 @@ class CarreraAdmin(admin.ModelAdmin):
 class AsignaturaAdmin(admin.ModelAdmin):
     pass
 
-'''@admin.register(Tutoria)
+@admin.register(Tutoria)
 class TutoriaAdmin(admin.ModelAdmin):
-    pass'''
+    pass
