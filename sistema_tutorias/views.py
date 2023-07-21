@@ -40,3 +40,6 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('/')
+
+def pedir_tutoria(request):
+    return render(request, 'html/pedir_tutoria.html')
