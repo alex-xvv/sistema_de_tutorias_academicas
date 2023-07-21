@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class Persona(models.Model):
     OPCIONES_CARGO = (
@@ -59,7 +60,7 @@ class Tutoria(models.Model):
     )
     docente = models.ForeignKey(Persona, limit_choices_to={'cargo': 'docente'}, on_delete=models.CASCADE)
     asignatura = models.ForeignKey(Asignatura, on_delete=models.CASCADE)
-    horario=models.DateField()
+    horario=models.DateTimeField()
     tema=models.CharField(max_length=60)
     modalidad=models.CharField(max_length=20, choices=OPCIONES_MODALIDAD)
 
@@ -73,4 +74,5 @@ class Informe(models.Model):
     fecha=models.DateField()
 
 class RegistroActividades(models.Model):
+
     fecha=models.DateField()
