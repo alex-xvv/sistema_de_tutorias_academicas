@@ -1,5 +1,9 @@
 from django.forms import ModelForm
 from .models import *
+from django.contrib.auth.forms import UserCreationForm
+
+class CustomUserCreationForm(UserCreationForm):
+    pass
 #from django import forms
 
 class AsignaturaForm(ModelForm):
@@ -16,3 +20,4 @@ class DocenteForm(ModelForm):
     class Meta:
         model=Docente
         fields='__all__'
+

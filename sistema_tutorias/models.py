@@ -3,24 +3,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-class Persona(models.Model):
-    OPCIONES_CARGO = (
-        ('decano', 'Decano'),
-        ('docente', 'Docente'),
-        ('estudiante', 'Estudiante'),
-        ('director', 'Director'),
-    )
-    cargo = models.CharField(max_length=20, choices=OPCIONES_CARGO)
-    cedula = models.CharField(max_length=20)
-    nombres = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
-
-    def info_docente(self):
-        return "|{}|{}|  {} {}".format(self.cargo, self.cedula, self.nombres, self.apellidos)
-
-    def __str__(self):
-        return self.info_docente()
-
 class Carrera(models.Model):
     OPCIONES_FACULTAD = (
         ('agropecuaria', 'Agropecuaria y de Recursos Naturales Renovables'),
@@ -70,12 +52,12 @@ class Asignatura(models.Model):
         return self.info_asignatura()
         return self.info_asignatura()
 
-class Tutoria(models.Model):
+'''class Tutoria(models.Model):
     OPCIONES_MODALIDAD = (
         ('presencial', 'Presencial'),
         ('virtual', 'Virtual'),
     )
-    docente = models.ForeignKey(Persona, limit_choices_to={'cargo': 'docente'}, on_delete=models.CASCADE)
+    docente = models.ForeignKey(Docente, limit_choices_to={'cargo': 'docente'}, on_delete=models.CASCADE)
     asignatura = models.ForeignKey(Asignatura, on_delete=models.CASCADE)
     horario=models.DateTimeField()
     tema=models.CharField(max_length=60)
@@ -85,10 +67,5 @@ class Tutoria(models.Model):
         return "{} - {} - {}".format(self.docente, self.tema, self.modalidad)
 
     def __str__(self):
-        return self.info_tutoria()
+        return self.info_tutoria()'''
 
-class Informe(models.Model):
-    fecha=models.DateField()
-
-class RegistroActividades(models.Model):
-    fecha=models.DateField()

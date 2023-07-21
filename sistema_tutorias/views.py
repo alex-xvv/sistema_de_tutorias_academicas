@@ -7,6 +7,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
 from django.db import IntegrityError
+from .forms import CustomUserCreationForm
 
 # Vistas de las diferentes paginas del proyecto.
 def index(request):
@@ -50,6 +51,9 @@ def registro_carreras(request):
     return render(request, 'html/registro_carreras.html',{'carreraForm':carreraForm, "Carrera": ListaCarreras})
 
 def register(request):
+    data = {
+        'form': CustomUserCreationForm()
+    }
     if request.method == 'GET':
         return render(request, 'html/registro.html', {'form': UserCreationForm()})
     else:
@@ -60,7 +64,8 @@ def register(request):
                 auth_login(request, user)
                 return redirect('/')
             except IntegrityError:
-                return render(request, 'html/registro.html', {'form': UserCreationForm(), 'error': 'El nombre de usuario ya existe. Por favor, elija otro nombre.'})
+                return render(request, 'html/registro.html', {'form': UserCreationForm(),
+                                                              'error': 'El nombre de usuario ya existe. Por favor, elija otro nombre.'})
 
 def login(request):
     if request.method == 'GET':
