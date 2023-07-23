@@ -84,3 +84,6 @@ def logout(request):
 
 def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
+
+def aceptar_tutoria(request):
+    return render(request, 'html/aceptar_tutoria.html')
