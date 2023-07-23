@@ -1,0 +1,12 @@
+/* Estilo personalizado para los botones en el navbar */
+.custom-link {
+  background-color: #6c757d; /* Fondo gris */
+  color: white; /* Texto blanco */
+  border-radius: 5px;
+  padding: 8px 15px;
+}
+
+/* Cambiar el color de fondo del botón al pasar el mouse */
+.custom-link:hover {
+  background-color: #5a6268; /* Color gris más oscuro al pasar el mouse */
+}
