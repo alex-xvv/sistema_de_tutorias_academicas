@@ -1,6 +1,7 @@
 {% extends 'html/base.html' %}
 {% load static %}
 {% block content %}
+    {% include "html/barra_de_navegacion.html" %}
 {% if error %}
 <div class="alert alert-danger alert-dismissible fade show">
     <strong>Error!</strong> {{error}}
