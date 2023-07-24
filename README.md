@@ -68,8 +68,4 @@ Django es un framework de desarrollo web de alto nivel en Python que fomenta el 
 
 
 
-<<<<<<< HEAD
 **¡Muchas gracias por su interés en nuestro proyecto!**
-=======
-**¡Muchas gracias por su interés en nuestro proyecto!**
->>>>>>> 11018e6460339975bd6fb81c3c153d48c3f2fbdd
