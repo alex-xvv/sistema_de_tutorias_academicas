@@ -87,3 +87,6 @@ def pedir_tutoria(request):
 
 def aceptar_tutoria(request):
     return render(request, 'html/aceptar_tutoria.html')
+
+def gestionar_registros(request):
+    return render(request, 'html/gestionar_registros.html')

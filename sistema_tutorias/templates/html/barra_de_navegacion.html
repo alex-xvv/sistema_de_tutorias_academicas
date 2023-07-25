@@ -13,12 +13,12 @@
   <a class="nav-link" href="/login">Iniciar Sesión</a>
   {% else %}
   {% if user.is_superuser %}
-  <a class="nav-link" href="/admin">Admin</a>
+  <a class="nav-link" href="/aceptar_tutoria">Aceptar tutoria</a>
+  <a class="nav-link" href="/gestionar_registros">Gestionar Registros</a>
   {% endif %}
   {% if user.is_authenticated %}
   <a class="nav-link" href="/pedir_tutoria">Pedir tutoria</a>
   {% endif %}
-  <a class="nav-link" href="/aceptar_tutoria">Aceptar tutoria</a>
   <a class="nav-link" href="/logout">Cerrar Sesión</a>
   {% endif %}
 </div>
