@@ -1,15 +1,15 @@
 {% extends 'html/base.html' %}
 {% load static %}
 {% block content %}
-    {% include "html/barra_de_navegacion.html" %}
+{% include "html/barra_de_navegacion.html" %}
 {% if error %}
 <div class="alert alert-danger alert-dismissible fade show">
-    <strong>Error!</strong> {{error}}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <strong>Error!</strong> {{error}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 {% endif %}
 <div class="container mt-5 p-4 bg-dark text-white table-container">
-  <h2>Acptación de Tutorías</h2>
+  <h2>Aceptación de Tutorías</h2>
   <table class="table table-bordered table-striped text-white">
     <thead>
       <tr>
@@ -67,7 +67,8 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="tutoriaModal" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel" aria-hidden="true">
+<div class="modal fade" id="tutoriaModal" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -81,9 +82,9 @@
         <form>
           <div class="form-group">
             <label for="foto">Horas disponibles: </label>
-            <img src="{% static "img/ejemplohora.png" %}" alt="Horas Disponibles" class="img-fluid">
+            <img src="{% static " img/ejemplohora.png" %}" alt="Horas Disponibles" class="img-fluid">
           </div>
-         
+
           <div class="form-group">
             <label for="hora">Hora de la Tutoría:</label>
             <input type="text" class="form-control" id="hora" name="hora" required>
@@ -103,32 +104,33 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="tutoriaModal2" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel2" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="tutoriaModalLabel">Denegar Tutoría</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Contenido del formulario -->
-          <form>
-            <div class="form-group">
-              <label for="foto">Horas disponibles: </label>
-              <img src="{% static "img/ejemplohora.png" %}" alt="Horas Disponibles" class="img-fluid">
-            </div>
-           
-            <div class="form-group">
-              <label for="tutoria">Comentario de la razón de Denegación de  Tutoría:</label>
-              <textarea class="form-control" id="tutoria" name="tutoria" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
-          </form>
-        </div>
+<div class="modal fade" id="tutoriaModal2" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tutoriaModalLabel">Denegar Tutoría</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Contenido del formulario -->
+        <form>
+          <div class="form-group">
+            <label for="foto">Horas disponibles: </label>
+            <img src="{% static " img/ejemplohora.png" %}" alt="Horas Disponibles" class="img-fluid">
+          </div>
+
+          <div class="form-group">
+            <label for="tutoria">Comentario de la razón de Denegación de Tutoría:</label>
+            <textarea class="form-control" id="tutoria" name="tutoria" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
 
 {% endblock %}
