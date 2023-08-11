@@ -1,3 +1,7 @@
+{% extends "html/base.html" %}
+{% block content %}
+{% include "html/barra_de_navegacion.html" %}
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -66,3 +70,6 @@
 </body>
 
 </html>
+
+{% include "html/pie_de_pagina.html" %}
+{% endblock %}
