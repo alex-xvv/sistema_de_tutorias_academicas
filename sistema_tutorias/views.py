@@ -7,11 +7,18 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
 from django.db import IntegrityError
+from django.contrib.auth.decorators import user_passes_test
 from .forms import CustomUserCreationForm
 
 # Vistas de las diferentes paginas del proyecto.
+def is_docente(user):
+    return user.groups.filter(name='Docente').exists()
+
+
 def index(request):
-    return render(request, 'html/index.html')
+    es_docente = is_docente(request.user)
+    es_superuser = request.user.is_superuser
+    return render(request, 'html/index.html', {'es_docente': es_docente, 'es_superuser': es_superuser})
 
 
 def about(request):
@@ -88,8 +95,9 @@ def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
 
 
+@user_passes_test(is_docente)
 def aceptar_tutoria(request):
-    return render(request, 'html/aceptar_tutoria.html')
+    return render(request, 'html/aceptar_tutoria.html', {'es_docente': True})
 
 
 def gestionar_registros(request):
