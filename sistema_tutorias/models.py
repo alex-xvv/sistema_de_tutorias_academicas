@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
 class Carrera(models.Model):
@@ -30,6 +31,8 @@ class Docente(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, default=0)
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
+    correo = models.EmailField(unique=True)
+    horario = models.ImageField(upload_to='media/', null=True, blank=True)
 
     def info_docente(self):
         return "|{} {}| - {}".format(self.nombres, self.apellidos, self.carrera)
@@ -51,6 +54,7 @@ class Asignatura(models.Model):
     def __str__(self):
         return self.info_asignatura()
         return self.info_asignatura()
+
 
 '''class Tutoria(models.Model):
     OPCIONES_MODALIDAD = (

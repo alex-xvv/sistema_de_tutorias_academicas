@@ -13,8 +13,10 @@ from .forms import CustomUserCreationForm
 def index(request):
     return render(request, 'html/index.html')
 
+
 def about(request):
     return render(request, 'html/about.html')
+
 
 def registro_docentes(request):
     ListaDocentes = Docente.objects.all()
@@ -39,6 +41,7 @@ def registro_asignaturas(request):
         asignaturaForm = AsignaturaForm()
     return render(request, 'html/registro_asignaturas.html',{'asignaturaForm':asignaturaForm, "Asignatura": ListaAsignaturas})
 
+
 def registro_carreras(request):
     ListaCarreras = Carrera.objects.all()
     if request.method == "POST":
@@ -50,22 +53,19 @@ def registro_carreras(request):
         carreraForm = CarreraForm()
     return render(request, 'html/registro_carreras.html',{'carreraForm':carreraForm, "Carrera": ListaCarreras})
 
+
 def register(request):
-    data = {
-        'form': CustomUserCreationForm()
-    }
-    if request.method == 'GET':
-        return render(request, 'html/registro.html', {'form': UserCreationForm()})
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('/')
     else:
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-                user.save()
-                auth_login(request, user)
-                return redirect('/')
-            except IntegrityError:
-                return render(request, 'html/registro.html', {'form': UserCreationForm(),
-                                                              'error': 'El nombre de usuario ya existe. Por favor, elija otro nombre.'})
+        form = CustomUserCreationForm()
+    
+    return render(request, 'html/registro.html', {'form': form})
+
 
 def login(request):
     if request.method == 'GET':
@@ -78,15 +78,19 @@ def login(request):
             auth_login(request, user)
             return redirect('/')
 
+
 def logout(request):
     auth_logout(request)
     return redirect('/')
 
+
 def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
 
+
 def aceptar_tutoria(request):
     return render(request, 'html/aceptar_tutoria.html')
+
 
 def gestionar_registros(request):
     return render(request, 'html/gestionar_registros.html')

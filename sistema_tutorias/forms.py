@@ -1,10 +1,19 @@
 from django.forms import ModelForm
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CustomUserCreationForm(UserCreationForm):
-    pass
-#from django import forms
+    email = forms.EmailField(label="Correo electrónico")
+    first_name = forms.CharField(label="Nombre")
+    last_name = forms.CharField(label="Apellido")
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
 
 class AsignaturaForm(ModelForm):
     class Meta:
