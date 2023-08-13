@@ -5,16 +5,16 @@ User = get_user_model()
 
 class Carrera(models.Model):
     OPCIONES_FACULTAD = (
-        ('agropecuaria', 'Agropecuaria y de Recursos Naturales Renovables'),
-        ('educación', 'Educación, el Arte y la Comunicación'),
-        ('energía', 'Energía, las Industrias y los Recursos Naturales no Renovables'),
-        ('jurídica', 'Jurídica, Social y Administrativa'),
-        ('salud', 'Salud Humana'),
-        ('distancia', 'Unidad de Educación a Distancia y en Línea'),
+        ('Agropecuaria y de Recursos Naturales Renovables', 'Agropecuaria y de Recursos Naturales Renovables'),
+        ('Educación, el Arte y la Comunicación', 'Educación, el Arte y la Comunicación'),
+        ('Energía, las Industrias y los Recursos Naturales no Renovables', 'Energía, las Industrias y los Recursos Naturales no Renovables'),
+        ('Jurídica, Social y Administrativa', 'Jurídica, Social y Administrativa'),
+        ('Salud Humana', 'Salud Humana'),
+        ('Unidad de Educación a Distancia y en Línea', 'Unidad de Educación a Distancia y en Línea'),
     )
 
     nombre = models.CharField(max_length=60)
-    facultad = models.CharField(max_length=30, choices=OPCIONES_FACULTAD)
+    facultad = models.CharField(max_length=70, choices=OPCIONES_FACULTAD)
     inicio_periodo = models.DateField()
     final_periodo = models.DateField()
 
@@ -46,26 +46,48 @@ class Asignatura(models.Model):
     paralelo = models.CharField(max_length=5)
 
     def info_asignatura(self):
-        return "{} - {} - {} - {}".format(self.nombre, self.docente, self.ciclo, self.paralelo)
+        return "{} - {} - {} - {}".format(self.nombre, self.docente.nombres, self.ciclo, self.paralelo)
 
     def __str__(self):
         return self.info_asignatura()
-        return self.info_asignatura()
 
-'''class Tutoria(models.Model):
+class Estudiante(models.Model):
+    OPCION_SEXO = [
+        ('Masculino', 'Masculino'),
+        ('Femenino', 'Femenino')
+    ]
+    nombre = models.CharField(max_length=50)
+    apellido = models.CharField(max_length=50)
+    usuario = models.EmailField(unique=True)
+    clave = models.CharField(max_length=15)
+    sexo = models.CharField(max_length=15, choices=OPCION_SEXO, default='F')
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, default=0)
+    asignatura=models.ManyToManyField(Asignatura)
+
+    def info_estudiante(self):
+        asignaturas_nombres = ', '.join(self.asignatura.values_list('nombre', flat=True))
+        return "|{} {}| - |{}| - |{}|".format(self.nombre, self.apellido, self.usuario, asignaturas_nombres)
+
+    def __str__(self):
+        return self.info_estudiante()
+
+
+class Tutoria(models.Model):
     OPCIONES_MODALIDAD = (
         ('presencial', 'Presencial'),
         ('virtual', 'Virtual'),
     )
-    docente = models.ForeignKey(Docente, limit_choices_to={'cargo': 'docente'}, on_delete=models.CASCADE)
+    #docente = models.OneToOneField(Docente, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     asignatura = models.ForeignKey(Asignatura, on_delete=models.CASCADE)
-    horario=models.DateTimeField()
-    tema=models.CharField(max_length=60)
-    modalidad=models.CharField(max_length=20, choices=OPCIONES_MODALIDAD)
+    horario = models.DateField(auto_now=True)
+    tema = models.CharField(max_length=60)
+    modalidad = models.CharField(max_length=20, choices=OPCIONES_MODALIDAD, default='presencial')
 
     def info_tutoria(self):
-        return "{} - {} - {}".format(self.docente, self.tema, self.modalidad)
+        return "{} - {} - {} - {} - {}".format(self.tema, self.horario, self.modalidad, self.asignatura.docente.nombres,
+                                               self.estudiante.nombre)
 
     def __str__(self):
-        return self.info_tutoria()'''
+        return self.info_tutoria()
 

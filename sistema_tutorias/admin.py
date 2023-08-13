@@ -14,4 +14,10 @@ class CarreraAdmin(admin.ModelAdmin):
 class AsignaturaAdmin(admin.ModelAdmin):
     pass
 
+@admin.register(Estudiante)
+class EstudianteAdmin(admin.ModelAdmin):
+    pass
 
+@admin.register(Tutoria)
+class TutoriaAdmin(admin.ModelAdmin):
+    pass

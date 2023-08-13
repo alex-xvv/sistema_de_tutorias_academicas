@@ -8,6 +8,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
 from django.db import IntegrityError
 from .forms import CustomUserCreationForm
+from django.contrib import messages
 
 # Vistas de las diferentes paginas del proyecto.
 def index(request):
@@ -17,38 +18,67 @@ def about(request):
     return render(request, 'html/about.html')
 
 def registro_docentes(request):
-    ListaDocentes = Docente.objects.all()
-    if request.method == "POST":
-        docenteForm = DocenteForm(request.POST)
-        if docenteForm.is_valid():
-            docenteForm.save()
-            return redirect('registro_docentes')
-    else:
-        docenteForm = DocenteForm()
-    return render(request, 'html/registro_docentes.html',{'docenteForm':docenteForm, "Docente":ListaDocentes})
+    carreras = Carrera.objects.all()
+    if request.method == 'POST':
+        nombres = request.POST['txtNombre']
+        apellidos = request.POST['txtApellido']
+        carrera_id = request.POST['slCarrera']
+        try:
+            carrera = Carrera.objects.get(pk=carrera_id)
+            docente = Docente.objects.create(nombres=nombres, apellidos=apellidos, carrera=carrera)
+            messages.success(request, 'Docente registrado exitosamente.')
+            return redirect("registro_docentes")
+        except Exception as e:
+            messages.error(request, 'No se pudo registrar el docente: {}'.format(str(e)))
+    return render(request, 'html/registro_docentes.html',{"carreras":carreras})
 
 
 def registro_asignaturas(request):
-    ListaAsignaturas = Asignatura.objects.all()
-    if request.method == "POST":
-        asignaturaForm = AsignaturaForm(request.POST)
-        if asignaturaForm.is_valid():
-            asignaturaForm.save()
-            return redirect('registro_asignaturas')
-    else:
-        asignaturaForm = AsignaturaForm()
-    return render(request, 'html/registro_asignaturas.html',{'asignaturaForm':asignaturaForm, "Asignatura": ListaAsignaturas})
+    carreras = Carrera.objects.all()
+    docentes = Docente.objects.all()
+    if request.method == 'POST':
+        nombre = request.POST['txtNombreAs']
+        ciclo = request.POST['txtCiclo']
+        paralelo = request.POST['txtParalelo']
+        docente_id = request.POST['slDocente']
+        carrera_id = request.POST['slCarrera']
+        try:
+            docente = Docente.objects.get(pk=docente_id)
+            carrera = Carrera.objects.get(pk=carrera_id)
+            asignatura = Asignatura.objects.create(nombre=nombre, ciclo=ciclo, paralelo=paralelo,
+                                     docente=docente, carrera=carrera)
+            messages.success(request, 'Asignatura registrada exitosamente.')
+            return redirect("registro_asignaturas")
+        except Exception as e:
+            messages.error(request, 'No se pudo registrar la asignatura: {}'.format(str(e)))
+    return render(request, 'html/registro_asignaturas.html',{"carreras":carreras, "docentes":docentes})
 
 def registro_carreras(request):
-    ListaCarreras = Carrera.objects.all()
-    if request.method == "POST":
-        carreraForm = CarreraForm(request.POST)
-        if carreraForm.is_valid():
-            carreraForm.save()
-            return redirect('registro_carreras')
+    carreras=Carrera.objects.all()
+    if request.method == 'POST':
+        nombre = request.POST['txtNombre']
+        facultad = request.POST['slFacultad']
+        inicio_periodo = request.POST['txtInicio']
+        final_periodo = request.POST['txtFin']
+
+        carrera = Carrera.objects.create(nombre=nombre, facultad=facultad, inicio_periodo=inicio_periodo,
+                        final_periodo=final_periodo)
+        messages.success(request, 'Carrera registrada exitosamente.')
+        return redirect("registro_carreras")
     else:
-        carreraForm = CarreraForm()
-    return render(request, 'html/registro_carreras.html',{'carreraForm':carreraForm, "Carrera": ListaCarreras})
+        print('No se pudo registrar Carrera.')
+        #messages.error(request, 'No se pudo registrar Carrera.')
+    return render(request, 'html/registro_carreras.html', { "carreras": carreras})
+
+'''def registro_estudiantes(request):
+    if request.method == 'POST':
+        estudianteForm = EstudianteForm(request.POST)
+        if estudianteForm.is_valid():
+            estudianteForm.save()
+            return redirect('registro_estudiantes')
+    else:
+        estudianteForm = EstudianteForm()
+    return render(request, 'html/registro_estudiantes.html', {'estudianteForm': estudianteForm})'''
 
 def register(request):
     data = {
@@ -81,4 +111,18 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('/')
+
+def pedir_tutoria(request):
+    return render(request, 'html/pedir_tutoria.html')
+
+def aceptar_tutoria(request):
+    return render(request, 'html/aceptar_tutoria.html')
+
+def gestionar_registros(request):
+    return render(request, 'html/gestionar_registros.html')
+
+def inicio_estudiante(request):
+    listaMaterias = Estudiante.objects.all()
+    return render(request, 'html/inicio_estudiante.html', {"lista":listaMaterias})
+
 

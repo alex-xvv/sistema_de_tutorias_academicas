@@ -1,77 +1,78 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
-  <title>Sistema Tutorias: Registro Asignaturas</title>
-</head>
-<body>
+{% extends "html/base.html" %}
 
-  <div class="container my-3">
-    {% csrf_token %}
-    <div class="row">
-      <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 py-4 bg-white">
-        <h2>Registrar Asignaturas</h2>
-        <form action="/registro_asignaturas/" method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre</label>
-              <input class="form-control" id="nombre" placeholder="Nombre Asignatura" autofocus {{ asignaturaForm.nombre }}/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Carrera</label>
-              {{ asignaturaForm.carrera }}
-            </div>
-            <div class="mb-3">
-              <label for="inicio" class="form-label">Ciclo</label>
-              <input class="form-control" id="inicio" placeholder="Ciclo Asignatura" autofocus {{ asignaturaForm.ciclo }}/>
-            </div>
-            <div class="mb-3">
-              <label for="fin" class="form-label">Paralelo</label>
-              <input class="form-control" id="fin" placeholder="Paralelo Asignatura" autofocus {{ asignaturaForm.paralelo }}/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Docente</label>
-              {{ asignaturaForm.docente }}
-            </div>
-            {% csrf_token %}
-            <div class="pt-1 mb-0">
-              <button class="btn btn-outline-success btn-lg btn-block" type="submit">Registrar </button>
-            </div>
-          </form>
-      </div>
-      <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 py-4 bg-white">
-        <h2>Listado de Asignatura</h2>
-          <table class="table table-dark table-striped">
-            <thead>
-              <tr>
-                <th class="centrado">Nombre</th>
-                <th class="centrado">Carrera</th>
-                <th class="centrado">Ciclo</th>
-                <th class="centrado">Paralelo</th>
-                <th class="centrado">Docente</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for a in Asignatura %}
-              <tr>
-                <td></td>
-                <td class="centrado">{{a.nombre}}</td>
-                <td class="centrado">{{a.carrera}}</td>
-                <td class="centrado">{{a.ciclo}}</td>
-                <td class="centrado">{{a.paralelo}}</td>
-                <td class="centrado">{{a.docente}}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+{% block title %}
+  Sistema Tutorías: Registro Asignaturas
+{% endblock %}
+
+{% block content %}
+  {% include "html/barra_de_navegacion.html" %}
+  {% load static %}
+
+  <style>
+    .bg-transparent {
+      background-color: rgba(255, 255, 255, 0.3); /* Cambia el valor alpha (0.3) para ajustar la transparencia */
+    }
+    .etiqueta-grande {
+      font-size: 1.5rem; /* Ajusta el tamaño de fuente según tus preferencias */
+    }
+  </style>
+
+  <div class="container-fluid bg-transparent text-dark py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-4 py-4 bg-white">
+        <h2 class="display-4 text-dark etiqueta-grande titulo-grande">Registrar Asignaturas</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="/registro_asignaturas/" method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label etiqueta-grande">Nombre</label>
+            <input class="form-control" id="txtNombreAs" name="txtNombreAs" required placeholder="Nombre Asignatura" autofocus />
+          </div>
+          <div class="mb-3">
+            <label class="form-label etiqueta-grande">Ciclo</label>
+            <input class="form-control" id="txtCiclo" name="txtCiclo" required placeholder="Ciclo Asignatura en letras" autofocus />
+          </div>
+          <div class="mb-3">
+            <label class="form-label etiqueta-grande">Paralelo</label>
+            <input class="form-control" id="txtParalelo" name="txtParalelo" required placeholder="Paralelo Asignatura en letras" autofocus />
+          </div>
+          <div class="mb-3">
+            <label class="form-label etiqueta-grande">Docente</label>
+            <select class="form-control" id="slDocente" name="slDocente" required>
+                {% for d in docentes %}
+                  <option value="{{ d.id }}">{{ d.nombres }}</option>
+                {% endfor %}
+              </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label etiqueta-grande">Carrera</label>
+            <select class="form-control" id="slCarrera" name="slCarrera" required>
+                {% for c in carreras %}
+                  <option value="{{ c.id }}">{{ c.nombre }}</option>
+                {% endfor %}
+              </select>
+          </div>
+          <div class="pt-1 mb-0">
+            <button class="btn btn-outline-dark btn-lg btn-block" type="submit">
+              <span class="fs-3">Registrar</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</body>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+  </body>
 </html>
+
+{% include "html/pie_de_pagina.html" %}
+{% endblock %}
