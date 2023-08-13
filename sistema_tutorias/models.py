@@ -30,6 +30,8 @@ class Docente(models.Model):
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, default=0)
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
+    correo = models.EmailField(unique=True)
+    horario = models.ImageField(upload_to='media/', null=True, blank=True)
 
     def info_docente(self):
         return "|{} {}| - {}".format(self.nombres, self.apellidos, self.carrera)

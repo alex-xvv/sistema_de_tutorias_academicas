@@ -7,15 +7,24 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
 from django.db import IntegrityError
+from django.contrib.auth.decorators import user_passes_test
 from .forms import CustomUserCreationForm
 from django.contrib import messages
 
 # Vistas de las diferentes paginas del proyecto.
+def is_docente(user):
+    return user.groups.filter(name='Docente').exists()
+
+
 def index(request):
-    return render(request, 'html/index.html')
+    es_docente = is_docente(request.user)
+    es_superuser = request.user.is_superuser
+    return render(request, 'html/index.html', {'es_docente': es_docente, 'es_superuser': es_superuser})
+
 
 def about(request):
     return render(request, 'html/about.html')
+
 
 def registro_docentes(request):
     carreras = Carrera.objects.all()
@@ -53,6 +62,7 @@ def registro_asignaturas(request):
             messages.error(request, 'No se pudo registrar la asignatura: {}'.format(str(e)))
     return render(request, 'html/registro_asignaturas.html',{"carreras":carreras, "docentes":docentes})
 
+
 def registro_carreras(request):
     carreras=Carrera.objects.all()
     if request.method == 'POST':
@@ -80,22 +90,19 @@ def registro_carreras(request):
         estudianteForm = EstudianteForm()
     return render(request, 'html/registro_estudiantes.html', {'estudianteForm': estudianteForm})'''
 
+
 def register(request):
-    data = {
-        'form': CustomUserCreationForm()
-    }
-    if request.method == 'GET':
-        return render(request, 'html/registro.html', {'form': UserCreationForm()})
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('/')
     else:
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-                user.save()
-                auth_login(request, user)
-                return redirect('/')
-            except IntegrityError:
-                return render(request, 'html/registro.html', {'form': UserCreationForm(),
-                                                              'error': 'El nombre de usuario ya existe. Por favor, elija otro nombre.'})
+        form = CustomUserCreationForm()
+    
+    return render(request, 'html/registro.html', {'form': form})
+
 
 def login(request):
     if request.method == 'GET':
@@ -108,15 +115,20 @@ def login(request):
             auth_login(request, user)
             return redirect('/')
 
+
 def logout(request):
     auth_logout(request)
     return redirect('/')
 
+
 def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
 
+
+@user_passes_test(is_docente)
 def aceptar_tutoria(request):
-    return render(request, 'html/aceptar_tutoria.html')
+    return render(request, 'html/aceptar_tutoria.html', {'es_docente': True})
+
 
 def gestionar_registros(request):
     return render(request, 'html/gestionar_registros.html')
