@@ -1,0 +1,70 @@
+{% extends "html/base.html" %}
+
+{% block title %}
+  Sistema Tutorías: Carreras
+{% endblock %}
+
+{% block content %}
+  {% include "html/barra_de_navegacion.html" %}
+  {% load static %}
+
+  <style>
+    .bg-transparent {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Estilos para hacer más grande el texto de las etiquetas */
+    .etiqueta-grande {
+      font-size: 1.5em;
+    }
+
+    /* Estilos para hacer más grande el texto en la tabla */
+    .tabla-grande {
+      font-size: 1.2em;
+    }
+
+    /* Estilos para hacer más grande el título y el botón */
+    .titulo-grande {
+      font-size: 3em; /* Ajusta el tamaño de fuente como desees */
+    }
+
+    .boton-grande {
+      font-size: 2em; /* Ajusta el tamaño de fuente como desees */
+    }
+
+    /* Estilos para hacer más grande el tamaño de los cuadros de entrada de texto */
+    .form-control {
+      font-size: 1.5em; /* Ajusta el tamaño de fuente como desees */
+    }
+  </style>
+<div class="col-md-8 py-4 bg-white mx-auto">
+        <h2 class="display-4 text-dark etiqueta-grande titulo-grande">Listado de Carreras</h2>
+        <table class="table table-blue table-striped tabla-grande">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Facultad</th>
+              <th>Periodo Inicio</th>
+              <th>Periodo Fin</th>
+                <th colspan="2" >Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in listaCarrera %}
+            <tr>
+              <td class="centrado">{{ c.nombre }}</td>
+              <td class="centrado">{{ c.facultad }}</td>
+              <td class="centrado">{{ c.inicio_periodo }}</td>
+              <td class="centrado">{{ c.final_periodo }}</td>
+               <td class="centrado"><a href="/modificar_carrera/{{ c.nombre }}" class="btn btn-info">Modificar</a></td>
+                <td class="centrado"><a href="/eliminar_carrera/{{ c.nombre }}" class="btn btn-danger">Eliminar</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+{% include "html/pie_de_pagina.html" %}
+{% endblock %}

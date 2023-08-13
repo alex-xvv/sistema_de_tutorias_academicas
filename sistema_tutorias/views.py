@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from  .forms import *
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login
@@ -31,16 +31,52 @@ def registro_docentes(request):
     if request.method == 'POST':
         nombres = request.POST['txtNombre']
         apellidos = request.POST['txtApellido']
+        correo = request.POST['txtCorreo']
         carrera_id = request.POST['slCarrera']
+        horario = request.FILES.get('txtHorario')
         try:
             carrera = Carrera.objects.get(pk=carrera_id)
-            docente = Docente.objects.create(nombres=nombres, apellidos=apellidos, carrera=carrera)
+            docente = Docente.objects.create(nombres=nombres, apellidos=apellidos, correo=correo, carrera=carrera, horario=horario)
             messages.success(request, 'Docente registrado exitosamente.')
             return redirect("registro_docentes")
         except Exception as e:
             messages.error(request, 'No se pudo registrar el docente: {}'.format(str(e)))
     return render(request, 'html/registro_docentes.html',{"carreras":carreras})
 
+def gestion_docentes(request):
+    listaDocentes = Docente.objects.all()
+    return render(request, "html/gestion_docentes.html", {"listaDocentes":listaDocentes})
+
+def eliminar_docente(request, correo):
+    docente = get_object_or_404(Docente, correo=correo)
+    if docente:
+        docente.delete()
+        messages.success(request, 'Docente eliminado exitosamente')
+        return redirect('gestion_docentes')
+    else:
+        messages.error(request, 'No se pudo eliminar docente')
+
+def modificar_docente(request, correo):
+    docente = get_object_or_404(Docente, correo=correo)
+    lista_carreras = Carrera.objects.all()
+    if request.method == 'POST':
+        nuevos_nombres = request.POST['nuevos_nombres']
+        nuevos_apellidos = request.POST['nuevos_apellidos']
+        nuevo_correo = request.POST['nuevo_correo']
+        nuevo_horario = request.FILES['nuevo_horario'] if 'nuevo_horario' in request.FILES else None
+        nuevo_carrera_id = request.POST['nuevo_carrera']
+
+        docente.nombres = nuevos_nombres
+        docente.apellidos = nuevos_apellidos
+        docente.correo = nuevo_correo
+        if nuevo_horario:
+            docente.horario = nuevo_horario
+        docente.carrera_id = nuevo_carrera_id
+        docente.save()
+
+        return redirect('gestion_docentes')
+
+    return render(request, 'html/modificar_docente.html', {'docente': docente, 'lista_carreras':lista_carreras})
 
 def registro_asignaturas(request):
     carreras = Carrera.objects.all()
@@ -62,23 +98,87 @@ def registro_asignaturas(request):
             messages.error(request, 'No se pudo registrar la asignatura: {}'.format(str(e)))
     return render(request, 'html/registro_asignaturas.html',{"carreras":carreras, "docentes":docentes})
 
+def gestion_asignaturas(request):
+    listaAsignaturas = Asignatura.objects.all()
+    return render(request, "html/gestion_asignaturas.html", {"listaAsignaturas":listaAsignaturas})
+
+def eliminar_asignatura(request, nombre):
+    asignatura = get_object_or_404(Asignatura, nombre=nombre)
+    if asignatura:
+        asignatura.delete()
+        messages.success(request, 'Asignatura eliminada exitosamente')
+        return redirect('gestion_asignaturas')
+    else:
+        messages.error(request, 'No se pudo eliminar asignatura')
+
+def modificar_asignatura(request, nombre):
+    asignatura = get_object_or_404(Asignatura, nombre=nombre)
+    lista_carreras = Carrera.objects.all()
+    lista_docentes = Docente.objects.all()
+    if request.method == 'POST':
+        nuevo_nombre = request.POST['nuevo_nombre']
+        nuevo_ciclo = request.POST['nuevo_ciclo']
+        nuevo_paralelo = request.POST['nuevo_paralelo']
+        nuevo_carrera_id = request.POST['nuevo_carrera']
+        nuevo_docente_id = request.POST['nuevo_docente']
+
+        asignatura.nombre = nuevo_nombre
+        asignatura.ciclo = nuevo_ciclo
+        asignatura.paralelo = nuevo_paralelo
+        asignatura.carrera_id = nuevo_carrera_id
+        asignatura.docente_id = nuevo_docente_id
+        asignatura.save()
+
+        return redirect('gestion_asignaturas')
+
+    return render(request, 'html/modificar_asignatura.html', {'asignatura': asignatura, 'lista_carreras': lista_carreras, 'lista_docentes': lista_docentes})
 
 def registro_carreras(request):
-    carreras=Carrera.objects.all()
+    carreras = Carrera.objects.all()
     if request.method == 'POST':
         nombre = request.POST['txtNombre']
         facultad = request.POST['slFacultad']
         inicio_periodo = request.POST['txtInicio']
         final_periodo = request.POST['txtFin']
+        try:
+            carrera = Carrera.objects.create(nombre=nombre, facultad=facultad, inicio_periodo=inicio_periodo,
+                            final_periodo=final_periodo)
+            messages.success(request, 'Carrera registrada exitosamente.')
+            return redirect("registro_carreras")
+        except Exception as e:
+            messages.error(request, 'No se pudo registrar la carrera: {}'.format(str(e)))
+    return render(request, 'html/registro_carreras.html', {"carreras": carreras})
 
-        carrera = Carrera.objects.create(nombre=nombre, facultad=facultad, inicio_periodo=inicio_periodo,
-                        final_periodo=final_periodo)
-        messages.success(request, 'Carrera registrada exitosamente.')
-        return redirect("registro_carreras")
+def gestion_carreras(request):
+    listaCarrera = Carrera.objects.all()
+    return render(request, "html/gestion_carreras.html", {"listaCarrera":listaCarrera})
+
+def eliminar_carrera(request, nombre):
+    carrera = get_object_or_404(Carrera, nombre=nombre)
+    if carrera:
+        carrera.delete()
+        messages.success(request, 'Carrera eliminada exitosamente')
+        return redirect('gestion_carreras')
     else:
-        print('No se pudo registrar Carrera.')
-        #messages.error(request, 'No se pudo registrar Carrera.')
-    return render(request, 'html/registro_carreras.html', { "carreras": carreras})
+        messages.error(request, 'No se pudo eliminar la carrera')
+
+def modificar_carrera(request, nombre):
+    carrera = get_object_or_404(Carrera, nombre=nombre)
+    if request.method == 'POST':
+        nueva_nombre = request.POST['nueva_nombre']
+        nueva_facultad = request.POST['nueva_facultad']
+        nueva_inicio = request.POST['nueva_inicio']
+        nueva_final = request.POST['nueva_final']
+
+        carrera.nombre = nueva_nombre
+        carrera.facultad = nueva_facultad
+        carrera.inicio_periodo = nueva_inicio
+        carrera.final_periodo = nueva_final
+        carrera.save()
+
+        return redirect('gestion_carreras')
+
+    return render(request, 'html/modificar_carrera.html', {'carrera': carrera})
 
 '''def registro_estudiantes(request):
     if request.method == 'POST':

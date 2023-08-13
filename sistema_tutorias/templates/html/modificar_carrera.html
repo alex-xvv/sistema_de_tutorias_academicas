@@ -1,14 +1,13 @@
 {% extends "html/base.html" %}
 
 {% block title %}
-  Sistema Tutorías: Registro Carreras
+  Sistema Tutorías: Editar Carreras
 {% endblock %}
 
 {% block content %}
-  {% include "html/barra_de_navegacion.html" %}
+{% include "html/barra_de_navegacion.html" %}
   {% load static %}
-
-  <style>
+    <style>
     .bg-transparent {
       background-color: rgba(255, 255, 255, 0.3);
     }
@@ -37,11 +36,10 @@
       font-size: 1.5em; /* Ajusta el tamaño de fuente como desees */
     }
   </style>
-
   <div class="container-fluid bg-transparent text-dark py-5">
     <div class="row justify-content-center">
       <div class="col-md-4 py-4 bg-white mx-auto">
-        <h2 class="display-4 text-dark etiqueta-grande titulo-grande">Registrar Carreras</h2>
+        <h2 class="display-4 text-dark etiqueta-grande titulo-grande">Modificar Carrera</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -49,46 +47,36 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <form action="/registro_carreras/" method="POST">
+        <form method="post">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label etiqueta-grande">Nombre</label>
-            <input class="form-control" id="txtNombre" name="txtNombre" required placeholder="Nombre Carrera" autofocus />
+            <label class="form-label etiqueta-grande">Nuevo Nombre:</label>
+            <input type="text" class="form-control" id="nueva_nombre" name="nueva_nombre" value="{{ carrera.nombre }}" required>
           </div>
           <div class="mb-3">
-            <label class="form-label etiqueta-grande" >Facultad</label>
-            <select class="form-control" id="slFacultad" name="slFacultad" required>
-              {% for c in carreras %}
-                <option value="{{ c.id }}">{{ c.facultad }}</option>
+            <label class="form-label etiqueta-grande">Nueva Facultad:</label>
+            <select class="form-control" id="nueva_facultad" name="nueva_facultad">
+              {% for opcion in carrera.OPCIONES_FACULTAD %}
+                <option value="{{ opcion.0 }}" {% if opcion.0 == carrera.facultad %}selected{% endif %}>{{ opcion.1 }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="mb-3">
-            <label class="form-label etiqueta-grande">Inicio del Periodo</label>
-            <input class="form-control" id="txtInicio" name="txtInicio" required placeholder="AA-MM-DD" autofocus />
+            <label class="form-label etiqueta-grande">Nuevo Inicio del Periodo:</label>
+            <input type="date" class="form-control" id="nueva_inicio" name="nueva_inicio" value="{{ carrera.inicio_periodo }}" required>
           </div>
           <div class="mb-3">
-            <label class="form-label etiqueta-grande">Fin del Periodo</label>
-            <input class="form-control" id="txtFin" name="txtFin" required placeholder="AA-MM-DD" autofocus />
+            <label class="form-label etiqueta-grande">Nuevo Fin del Periodo:</label>
+            <input type="date" class="form-control" id="nueva_final" name="nueva_final" value="{{ carrera.final_periodo }}" required>
           </div>
-
           <div class="pt-1 mb-0">
             <button class="btn btn-outline-success btn-lg btn-block btn-block boton-grande" type="submit">
-              <span class="fs-3">Registrar</span>
+              <span class="fs-3">Guardar Cambios</span>
             </button>
           </div>
         </form>
-      </div>
-
+        </div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-</body>
-
-</html>
-
 {% include "html/pie_de_pagina.html" %}
 {% endblock %}
