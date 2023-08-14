@@ -1,13 +1,13 @@
 {% extends 'html/base.html' %}
 {% load static %}
 {% block content %}
-{% include "html/barra_de_navegacion.html" %}
-{% if error %}
-<div class="alert alert-danger alert-dismissible fade show">
-  <strong>Error!</strong> {{error}}
-  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-{% endif %}
+  {% include "html/barra_de_navegacion.html" %}
+  {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show">
+      <strong>Error!</strong> {{error}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endif %}
 <div class="container mt-5 p-4 bg-dark text-white table-container">
   <h2>Aceptación de Tutorías</h2>
   <table class="table table-bordered table-striped text-white">
@@ -15,122 +15,104 @@
       <tr>
         <th>#</th>
         <th>Nombre</th>
+        <th>Apellido</th>
         <th>Correo Electrónico</th>
         <th>Opciones</th>
       </tr>
     </thead>
     <tbody>
+    {% for e in lista_estudiantes %}
       <tr>
-        <td>1</td>
-        <td>Juan Pérez</td>
-        <td>juan@example.com</td>
+        <td class="centrado">{{ forloop.counter }}</td>
+        <td class="centrado">{{ e.nombre }}</td>
+        <td class="centrado">{{ e.apellido }}</td>
+        <td class="centrado">{{ e.usuario }}</td>
         <td>
           <!-- Botón para abrir el modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModal">
+          <button type="button" name="accion" value="aceptar" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModalAceptar{{ forloop.counter }}">
             Aceptar Tutoría
           </button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModal">
+          <button type="button" name="accion" value="denegar" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModalDenegar{{ forloop.counter }}">
             Denegar Tutoría
           </button>
         </td>
       </tr>
-      <tr>
-        <td>2</td>
-        <td>María López</td>
-        <td>maria@example.com</td>
-        <td>
-          <!-- Botón para abrir el modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModal">
-            Aceptar Tutoría
-          </button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModal">
-            Denegar Tutoría
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Carlos Gómez</td>
-        <td>carlos@example.com</td>
-        <td>
-          <!-- Botón para abrir el modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tutoriaModal">
-            Aceptar Tutoría
-          </button>
-          <button type="button" class="btn btn-primary" data-toggle="modal2" data-target="#tutoriaModal2">
-            Denegar Tutoría
-          </button>
-        </td>
-      </tr>
+    {% endfor %}
     </tbody>
   </table>
 </div>
 
+{% for e in lista_estudiantes %}
 <!-- Modal -->
-<div class="modal fade" id="tutoriaModal" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="tutoriaModalLabel">Aceptar Tutoría</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Contenido del formulario -->
-        <form>
-          <div class="form-group">
-            <label>Horas disponibles: </label>
-            <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
-          </div>
+  <div class="modal fade" id="tutoriaModalAceptar{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tutoriaModalLabel">Aceptar Tutoría</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Contenido del formulario -->
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Horas disponibles: </label>
+              <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
+            </div>
 
-          <div class="form-group">
-            <label for="hora">Hora de la Tutoría:</label>
-            <input type="text" class="form-control" id="hora" name="hora" required>
-          </div>
-          <div class="form-group">
-            <label for="dia">Día de la Tutoría:</label>
-            <input type="text" class="form-control" id="dia" name="dia" required>
-          </div>
-          <div class="form-group">
-            <label for="tutoria">Información de la Tutoría:</label>
-            <textarea class="form-control" id="tutoria" name="tutoria" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
+            <div class="form-group">
+              <label for="txthora">Hora de la Tutoría:</label>
+              <input type="text" class="form-control" id="txthora" name="txthora" required>
+            </div>
+            <div class="form-group">
+              <label for="txtdia">Día de la Tutoría:</label>
+              <input type="text" class="form-control" id="txtdia" name="txtdia" required>
+            </div>
+            <div class="form-group">
+              <label for="txtinfotutoria">Información de la Tutoría:</label>
+              <textarea class="form-control" id="txtinfotutoria" name="txtinfotutoria" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="tutoriaModal2" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel2"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="tutoriaModalLabel">Denegar Tutoría</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Contenido del formulario -->
-        <form>
-          <div class="form-group">
-            <label>Horas disponibles: </label>
-            <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
-          </div>
+{% endfor %}
 
-          <div class="form-group">
-            <label for="tutoria">Comentario de la razón de Denegación de Tutoría:</label>
-            <textarea class="form-control" id="tutoria" name="tutoria" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
+{% for e in lista_estudiantes %}
+<!-- Modal -->
+  <div class="modal fade" id="tutoriaModalDenegar{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="tutoriaModalLabel2"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tutoriaModalLabel">Denegar Tutoría</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Contenido del formulario -->
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Horas disponibles: </label>
+              <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
+            </div>
+
+            <div class="form-group">
+              <label for="txttutoria">Comentario de la razón de Denegación de Tutoría:</label>
+              <textarea class="form-control" id="txttutoria" name="txttutoria" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
+{% endfor %}
 {% endblock %}

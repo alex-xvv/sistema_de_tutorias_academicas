@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  {% include "html/barra_de_navegacion.html" %}
-  {% load static %}
+{% include "html/barra_de_navegacion.html" %}
 
   <style>
     .bg-transparent {
@@ -57,7 +56,7 @@
                   <td class="centrado">{{ d.apellidos }}</td>
                   <td class="centrado">{{ d.carrera.nombre }}</td>
                     <td class="centrado">{{ d.correo }}</td>
-                    <td class="centrado">{{ d.horario }}</td>
+                    <td><img src="/media/{{ d.horario }}" class="rounded mx-auto" width="100" height="100"></td>
                     <td><a href="/modificar_docente/{{ d.correo }}" class="btn btn-info">Modificar</a></td>
                 <td><a href="/eliminar_docente/{{ d.correo }}" class="btn btn-danger">Eliminar</a></td>
                 </tr>
