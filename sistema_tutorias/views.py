@@ -1,7 +1,8 @@
 from  .forms import *
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.core.mail import EmailMessage, send_mail
+from django.template.loader import render_to_string
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
@@ -11,6 +12,14 @@ from .forms import CustomUserCreationForm
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+from .models import Estudiante, Asignatura, Docente
+from django.http import HttpResponse
+from proyecto_tutorias.settings import EMAIL_HOST_USER
+from .forms import *
 
 # Vistas de las diferentes paginas del proyecto.
 def is_docente(user):
@@ -44,9 +53,11 @@ def registro_docentes(request):
             messages.error(request, 'No se pudo registrar el docente: {}'.format(str(e)))
     return render(request, 'html/registro_docentes.html',{"carreras":carreras})
 
+
 def gestion_docentes(request):
     listaDocentes = Docente.objects.all()
     return render(request, "html/gestion_docentes.html", {"listaDocentes":listaDocentes})
+
 
 def eliminar_docente(request, correo):
     docente = get_object_or_404(Docente, correo=correo)
@@ -56,6 +67,7 @@ def eliminar_docente(request, correo):
         return redirect('gestion_docentes')
     else:
         messages.error(request, 'No se pudo eliminar docente')
+
 
 def modificar_docente(request, correo):
     docente = get_object_or_404(Docente, correo=correo)
@@ -79,6 +91,7 @@ def modificar_docente(request, correo):
 
     return render(request, 'html/modificar_docente.html', {'docente': docente, 'lista_carreras':lista_carreras})
 
+
 def registro_asignaturas(request):
     carreras = Carrera.objects.all()
     docentes = Docente.objects.all()
@@ -99,9 +112,11 @@ def registro_asignaturas(request):
             messages.error(request, 'No se pudo registrar la asignatura: {}'.format(str(e)))
     return render(request, 'html/registro_asignaturas.html',{"carreras":carreras, "docentes":docentes})
 
+
 def gestion_asignaturas(request):
     listaAsignaturas = Asignatura.objects.all()
     return render(request, "html/gestion_asignaturas.html", {"listaAsignaturas":listaAsignaturas})
+
 
 def eliminar_asignatura(request, nombre):
     asignatura = get_object_or_404(Asignatura, nombre=nombre)
@@ -111,6 +126,7 @@ def eliminar_asignatura(request, nombre):
         return redirect('gestion_asignaturas')
     else:
         messages.error(request, 'No se pudo eliminar asignatura')
+
 
 def modificar_asignatura(request, nombre):
     asignatura = get_object_or_404(Asignatura, nombre=nombre)
@@ -134,6 +150,7 @@ def modificar_asignatura(request, nombre):
 
     return render(request, 'html/modificar_asignatura.html', {'asignatura': asignatura, 'lista_carreras': lista_carreras, 'lista_docentes': lista_docentes})
 
+
 def registro_carreras(request):
     carreras = Carrera.objects.all()
     if request.method == 'POST':
@@ -150,9 +167,11 @@ def registro_carreras(request):
             messages.error(request, 'No se pudo registrar la carrera: {}'.format(str(e)))
     return render(request, 'html/registro_carreras.html', {"carreras": carreras})
 
+
 def gestion_carreras(request):
     listaCarrera = Carrera.objects.all()
     return render(request, "html/gestion_carreras.html", {"listaCarrera":listaCarrera})
+
 
 def eliminar_carrera(request, nombre):
     carrera = get_object_or_404(Carrera, nombre=nombre)
@@ -162,6 +181,7 @@ def eliminar_carrera(request, nombre):
         return redirect('gestion_carreras')
     else:
         messages.error(request, 'No se pudo eliminar la carrera')
+
 
 def modificar_carrera(request, nombre):
     carrera = get_object_or_404(Carrera, nombre=nombre)
@@ -180,16 +200,6 @@ def modificar_carrera(request, nombre):
         return redirect('gestion_carreras')
 
     return render(request, 'html/modificar_carrera.html', {'carrera': carrera})
-
-'''def registro_estudiantes(request):
-    if request.method == 'POST':
-        estudianteForm = EstudianteForm(request.POST)
-        if estudianteForm.is_valid():
-            estudianteForm.save()
-            return redirect('registro_estudiantes')
-    else:
-        estudianteForm = EstudianteForm()
-    return render(request, 'html/registro_estudiantes.html', {'estudianteForm': estudianteForm})'''
 
 
 def register(request):
@@ -297,8 +307,53 @@ def enviar_solicitud(request, estudiante_id):
 def gestionar_registros(request):
     return render(request, 'html/gestionar_registros.html')
 
+
 def inicio_estudiante(request):
     listaMaterias = Estudiante.objects.all()
     return render(request, 'html/inicio_estudiante.html', {"lista":listaMaterias})
 
 
+@login_required
+def pedir_tutoria(request):
+    user = request.user
+    if user.is_authenticated:
+        asignaturas = Asignatura.objects.filter(estudiante__usuario=user.email)
+        docentes = []
+
+        for asignatura in asignaturas:
+            docente = asignatura.docente
+            docentes.append(docente)
+        return render(request, 'html/pedir_tutoria.html', {'docentes': docentes})
+
+    return HttpResponse("No tienes permisos para acceder a esta página.")
+
+
+@login_required
+def enviar_solicitud(request):
+    if request.method == 'POST':
+        nombre_estudiante = request.POST.get('nombre')
+        hora_tutoria = request.POST.get('hora')
+        dia_tutoria = request.POST.get('dia')
+        informacion_tutoria = request.POST.get('tutoria')
+        correo_docente = request.POST.get('correo_docente')
+        # ... Resto de tu código ...
+        
+        # Enviar el correo electrónico
+        subject = 'Solicitud de Tutoría'
+        message = f'Hola, has recibido una nueva solicitud de tutoría:\n\n' \
+                  f'Nombre del Estudiante: {nombre_estudiante}\n' \
+                  f'Hora de la Tutoría: {hora_tutoria}\n' \
+                  f'Día de la Tutoría: {dia_tutoria}\n' \
+                  f'Información de la Tutoría: {informacion_tutoria}\n'
+        from_email = EMAIL_HOST_USER
+        recipient_list = [correo_docente]
+        
+        send_mail(subject, message, from_email, recipient_list)
+        
+        return render(request, 'html/confirmacion_envio_email.html')  # Renderizar una página de éxito o redirigir a donde sea necesario
+    
+    return render(request, 'html/perdir_tutoria.html')
+
+
+def confirmacion_envio_email(request):
+    return render(request, 'html/confirmacion_envio_email.html')

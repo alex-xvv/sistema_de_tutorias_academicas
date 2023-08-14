@@ -53,6 +53,7 @@ class Asignatura(models.Model):
     def __str__(self):
         return self.info_asignatura()
 
+
 class Estudiante(models.Model):
     OPCION_SEXO = [
         ('Masculino', 'Masculino'),
@@ -92,4 +93,4 @@ class Tutoria(models.Model):
 
     def __str__(self):
         return self.info_tutoria()
-
+    
