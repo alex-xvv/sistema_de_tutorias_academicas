@@ -11,6 +11,7 @@ from .forms import CustomUserCreationForm
 from django.contrib import messages
 from .models import Estudiante, Asignatura, Docente
 from django.http import HttpResponse
+from proyecto_tutorias.settings import EMAIL_HOST_USER
 from .forms import *
 
 # Vistas de las diferentes paginas del proyecto.
@@ -258,33 +259,31 @@ def pedir_tutoria(request):
 
 
 @login_required
-def enviar_solicitud(request, docente_id):
+def enviar_solicitud(request):
     if request.method == 'POST':
-        # Recopilar los datos del formulario
         nombre_estudiante = request.POST.get('nombre')
         hora_tutoria = request.POST.get('hora')
+        dia_tutoria = request.POST.get('dia')
         informacion_tutoria = request.POST.get('tutoria')
-
-        # Obtener el objeto del docente según el ID pasado en la URL
-        try:
-            docente = Docente.objects.get(id=docente_id)
-        except Docente.DoesNotExist:
-            return print('error no existe el docente')
-
-        # Obtener el correo electrónico del usuario autenticado
-        usuario = request.user
-        correo_usuario = usuario.email
-
-        # Envío de correo electrónico
-        subject = f'Solicitud de Tutoría de {nombre_estudiante}'
-        message = f'Estimado/a {docente.nombres},\n\nEl estudiante {nombre_estudiante} desea solicitar una tutoría contigo.\n\nDetalles de la solicitud:\nHora: {hora_tutoria}\nInformación: {informacion_tutoria}\n\nPor favor, ponte en contacto con el estudiante ({correo_usuario}) para coordinar la tutoría.'
-        from_email = correo_usuario
-        recipient_list = [docente.correo]
-
+        correo_docente = request.POST.get('correo_docente')
+        # ... Resto de tu código ...
+        
+        # Enviar el correo electrónico
+        subject = 'Solicitud de Tutoría'
+        message = f'Hola, has recibido una nueva solicitud de tutoría:\n\n' \
+                  f'Nombre del Estudiante: {nombre_estudiante}\n' \
+                  f'Hora de la Tutoría: {hora_tutoria}\n' \
+                  f'Día de la Tutoría: {dia_tutoria}\n' \
+                  f'Información de la Tutoría: {informacion_tutoria}\n'
+        from_email = EMAIL_HOST_USER
+        recipient_list = [correo_docente]
+        
         send_mail(subject, message, from_email, recipient_list)
-
-        return render(request, 'html/index.html')
-
-    return render(request, 'html/pedir_tutoria.html', {'docente_id': docente_id})
-
+        
+        return render(request, 'html/confirmacion_envio_email.html')  # Renderizar una página de éxito o redirigir a donde sea necesario
     
+    return render(request, 'html/perdir_tutoria.html')
+
+
+def confirmacion_envio_email(request):
+    return render(request, 'html/confirmacion_envio_email.html')

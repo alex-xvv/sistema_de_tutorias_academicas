@@ -24,6 +24,8 @@ urlpatterns = [
     path('aceptar_tutoria/', views.aceptar_tutoria, name='aceptar_tutoria'),
     path('gestionar_registros/', views.gestionar_registros, name='gestionar_registros'),
     path('inicio_estudiante/', views.inicio_estudiante, name='inicio_estudiante'),
+    path('confirmacion_envio_email/', views.confirmacion_envio_email, name='confirmacion_envio_email'),
+    path('enviar_solicitud/', views.enviar_solicitud, name='enviar_solicitud'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

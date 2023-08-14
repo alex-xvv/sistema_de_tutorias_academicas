@@ -54,10 +54,12 @@
       </div>
       <div class="modal-body">
         <!-- Contenido del formulario -->
-        <form>
+        <form action="{% url 'enviar_solicitud' %}" method="post">
+          {% csrf_token %}
           <div class="form-group">
             <label for="foto">Horario:</label>
             <img src="{{ docente.horario.url }}" alt="Horario del Docente" class="img-fluid">
+            <input type="hidden" id="correo_docente" name="correo_docente" value="{{ docente.correo }}">
           </div>
           <div class="form-group">
             <label for="nombre">Nombre del Estudiante:</label>
