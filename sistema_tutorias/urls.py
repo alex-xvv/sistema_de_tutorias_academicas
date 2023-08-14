@@ -1,5 +1,7 @@
 from proyecto_tutorias.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
@@ -23,3 +25,5 @@ urlpatterns = [
     path('gestionar_registros/', views.gestionar_registros, name='gestionar_registros'),
     path('inicio_estudiante/', views.inicio_estudiante, name='inicio_estudiante'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
