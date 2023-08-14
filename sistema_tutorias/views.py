@@ -1,3 +1,4 @@
+from  .forms import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.mail import EmailMessage, send_mail
@@ -5,6 +6,12 @@ from django.template.loader import render_to_string
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import authenticate as auth_authenticate
+from django.db import IntegrityError
+from django.contrib.auth.decorators import user_passes_test, login_required
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from .forms import CustomUserCreationForm
@@ -228,11 +235,74 @@ def logout(request):
 def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
 
-
 @user_passes_test(is_docente)
 def aceptar_tutoria(request):
-    return render(request, 'html/aceptar_tutoria.html', {'es_docente': True})
+    user = request.user
+    if user.is_authenticated:
+        tutorias = Tutoria.objects.filter(asignatura__docente__correo=user.email)
+        lista_estudiantes = []
 
+        for tutoria in tutorias:
+            #docente = asignatura.docente
+            estudiante = tutoria.estudiante
+            lista_estudiantes.append(estudiante)
+        return render(request, 'html/aceptar_tutoria.html', {'lista_estudiantes': lista_estudiantes})
+
+    return HttpResponse("No tienes permisos para acceder a esta página.")
+
+    #return render(request, 'html/aceptar_tutoria.html', {'es_docente': True, "estudiante": estudiante})
+
+@login_required
+def enviar_solicitud(request, estudiante_id):
+    #estudiante = Estudiante.objects.all()
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+
+        if accion == 'aceptar':
+            hora = request.POST['txthora']
+            dia = request.POST['txtdia']
+            tutoria_info = request.POST['txtinfotutoria']
+            try:
+                estudiantes = Estudiante.objects.get(id=estudiante_id)
+            except Estudiante.DoesNotExist:
+                return print('error no existe el estudiante')
+
+            # Obtener el correo electrónico del usuario autenticado
+            usuario = request.user
+            correo_usuario = usuario.email
+
+            # Envío de correo electrónico
+            subject = f'Solicitud de Tutoría'
+            message = f'Estimado/a {estudiantes.nombre},\n\nSe ha aceptado su tutoria.\n\nDetalles de la solicitud:\nHora: ' \
+                      f'{hora}\nDia:{dia}\nInformación: {tutoria_info}\n\nPor favor, ponte en contacto con el estudiante ({correo_usuario}) para coordinar la tutoría.'
+            from_email = correo_usuario
+            recipient_list = [estudiantes.usuario]
+
+            send_mail(subject, message, from_email, recipient_list)
+
+            return render(request, 'html/aceptar_tutoria.html', {'accion': 'aceptada'})
+        elif accion == 'denegar':
+            razon_denegacion = request.POST['txttutoria']
+            try:
+                estudiantes = Estudiante.objects.get(id=estudiante_id)
+            except Estudiante.DoesNotExist:
+                return print('error no existe el estudiante')
+
+            # Obtener el correo electrónico del usuario autenticado
+            usuario = request.user
+            correo_usuario = usuario.email
+
+            # Envío de correo electrónico
+            subject = f'Solicitud de Tutoría'
+            message = f'Estimado/a {estudiantes.nombre},\n\nSe ha negado su tutoria.\n\nDetalles de la solicitud:\nDebido a la siguiente razo: ' \
+                      f'{razon_denegacion}\n\nPor favor, ponte en contacto con el estudiante ({correo_usuario}) para coordinar la tutoría.'
+            from_email = correo_usuario
+            recipient_list = [estudiantes.usuario]
+
+            send_mail(subject, message, from_email, recipient_list)
+            return render(request, 'html/aceptar_tutoria.html', {'accion': 'denegada'})
+
+    return render(request, 'html/aceptar_tutoria.html', {'estudiante_id': estudiante_id})
 
 def gestionar_registros(request):
     return render(request, 'html/gestionar_registros.html')
