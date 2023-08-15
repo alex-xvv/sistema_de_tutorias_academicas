@@ -26,7 +26,8 @@ urlpatterns = [
     path('inicio_estudiante/', views.inicio_estudiante, name='inicio_estudiante'),
     path('confirmacion_envio_email/', views.confirmacion_envio_email, name='confirmacion_envio_email'),
     path('enviar_solicitud/', views.enviar_solicitud, name='enviar_solicitud'),
-    path('enviar_solicitud_estudiante/',views.enviar_solicitud_estudiante, name='enviar_solicitud_estudiante'),
+    path('enviar_solicitud_aceptada_estudiante/',views.enviar_solicitud_aceptada_estudiante, name='enviar_solicitud_aceptada_estudiante'),
+    path('enviar_solicitud_rechazada_estudiante/',views.enviar_solicitud_rechazada_estudiante, name='enviar_solicitud_rechazada_estudiante'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
