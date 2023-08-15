@@ -235,6 +235,7 @@ def logout(request):
 def pedir_tutoria(request):
     return render(request, 'html/pedir_tutoria.html')
 
+
 @user_passes_test(is_docente)
 def aceptar_tutoria(request):
     user = request.user
@@ -253,7 +254,10 @@ def aceptar_tutoria(request):
     #return render(request, 'html/aceptar_tutoria.html', {'es_docente': True, "estudiante": estudiante})
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b7940db5792b8024cf9b082dbbd8331855bb235
 @login_required
 def enviar_solicitud_aceptada_estudiante(request):
     #estudiante = Estudiante.objects.all()
@@ -296,6 +300,7 @@ def enviar_solicitud_rechazada_estudiante(request):
 
     return render(request, 'html/aceptar_tutoria.html')
 
+
 def gestionar_registros(request):
     return render(request, 'html/gestionar_registros.html')
 
@@ -322,25 +327,32 @@ def pedir_tutoria(request):
 
 @login_required
 def enviar_solicitud(request):
+    user = request.user
     if request.method == 'POST':
+        correo_alumno = user.email
         nombre_estudiante = request.POST.get('nombre')
         hora_tutoria = request.POST.get('hora')
         dia_tutoria = request.POST.get('dia')
         informacion_tutoria = request.POST.get('tutoria')
         correo_docente = request.POST.get('correo_docente')
         # ... Resto de tu código ...
-        
-        # Enviar el correo electrónico
+        context = {
+            'nombre_estudiante': nombre_estudiante,
+            'hora_tutoria': hora_tutoria,
+            'dia_tutoria': dia_tutoria,
+            'informacion_tutoria': informacion_tutoria,
+            'correo_alumno': correo_alumno,
+        }
+        email_content = render_to_string('html/email_template.html', context)
+
+        # Crear y enviar el correo electrónico con formato HTML
         subject = 'Solicitud de Tutoría'
-        message = f'Hola, has recibido una nueva solicitud de tutoría:\n\n' \
-                  f'Nombre del Estudiante: {nombre_estudiante}\n' \
-                  f'Hora de la Tutoría: {hora_tutoria}\n' \
-                  f'Día de la Tutoría: {dia_tutoria}\n' \
-                  f'Información de la Tutoría: {informacion_tutoria}\n'
         from_email = EMAIL_HOST_USER
         recipient_list = [correo_docente]
-        
-        send_mail(subject, message, from_email, recipient_list)
+
+        email = EmailMessage(subject, email_content, from_email, recipient_list)
+        email.content_subtype = 'html'  # Indicar que el contenido es HTML
+        email.send()
         
         return render(request, 'html/confirmacion_envio_email.html')  # Renderizar una página de éxito o redirigir a donde sea necesario
     
