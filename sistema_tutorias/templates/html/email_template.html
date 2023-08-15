@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solicitud de Tutoría</title>
+    <link rel="stylesheet" href="{% static 'css/email_template.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h2 class="title">Tines una nueva solicitud de tutoria</h2>
+        <p class="subtitulo">Has recibido una nueva solicitud de tutoría</p>
+    </div>
+    <div class="content">
+        <ul>
+            <li>Nombre del Estudiante: {{ nombre_estudiante }}</li>
+            <li>Hora de la Tutoría: {{ hora_tutoria }}</li>
+            <li>Día de la Tutoría: {{ dia_tutoria }}</li>
+            <li>Información de la Tutoría: {{ informacion_tutoria }}</li>
+            <li>Correo del alumno: {{ correo_alumno }}</li>
+        </ul>
+    </div>
+</body>
+</html>

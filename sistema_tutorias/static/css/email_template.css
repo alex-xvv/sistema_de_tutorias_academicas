@@ -1,0 +1,44 @@
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid #000;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+    background-color: #87CEEB;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #000;
+}
+
+.title {
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+.content {
+    background-color: #FFF8E7;
+    padding: 20px;
+}
+
+.highlight {
+    background-color: #FFFF99;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.subtitulo {
+    color: #ffffff;
+    margin: 0;
+}
