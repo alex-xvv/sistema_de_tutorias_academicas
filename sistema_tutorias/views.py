@@ -252,43 +252,47 @@ def aceptar_tutoria(request):
 
     #return render(request, 'html/aceptar_tutoria.html', {'es_docente': True, "estudiante": estudiante})
 
+
+
 @login_required
-def enviar_solicitud_estudiante(request):
+def enviar_solicitud_aceptada_estudiante(request):
     #estudiante = Estudiante.objects.all()
     if request.method == 'POST':
-        accion = request.POST.get('accion')
-
-        if accion == 'aceptar':
-            nombre_estudiante = request.POST['txtnombre']
-            hora = request.POST['txthora']
-            dia = request.POST['txtdia']
-            tutoria_info = request.POST['txtinfotutoria']
-            correo_estudiante = request.POST['correo_estudiante']
+        nombre_estudiante = request.POST['txtnombre']
+        hora = request.POST['txthora']
+        dia = request.POST['txtdia']
+        tutoria_info = request.POST['txtinfotutoria']
+        correo_estudiante = request.POST['correo_estudiante']
 
             # Envío de correo electrónico
-            subject = f'Solicitud de Tutoría'
-            message = f'Estimado/a {nombre_estudiante.nombre},\n\nSe ha aceptado su tutoria.\n\nDetalles de la solicitud:\nHora: ' \
+        subject = f'Solicitud de Tutoría'
+        message = f'Estimado/a {nombre_estudiante},\n\nSe ha aceptado su tutoria.\n\nDetalles de la solicitud:\nHora: ' \
                       f'{hora}\nDia:{dia}\nInformación: {tutoria_info}\n'
-            from_email = EMAIL_HOST_USER
-            recipient_list = [correo_estudiante]
+        from_email = EMAIL_HOST_USER
+        recipient_list = [correo_estudiante]
 
-            send_mail(subject, message, from_email, recipient_list)
+        send_mail(subject, message, from_email, recipient_list)
+        messages.success(request, 'Correo enviado exitosamente.')
+        #return redirect('html/confirmacion_envio_email.html')
 
-            return redirect('html/confirmacion_envio_email.html', {'accion': 'aceptada'})
-        elif accion == 'denegar':
-            nombre_estudiante = request.POST['txtnombre1']
-            razon_denegacion = request.POST['txttutoria']
-            correo_estudiante = request.POST['correo_estudiante1']
+    return render(request, 'html/aceptar_tutoria.html')
+
+def enviar_solicitud_rechazada_estudiante(request):
+    if request.method == 'POST':
+        nombre_estudiante = request.POST['txtnombre1']
+        tutoria_info = request.POST['txttutoria']
+        correo_estudiante = request.POST['correo_estudiante1']
 
             # Envío de correo electrónico
-            subject = f'Solicitud de Tutoría'
-            message = f'Estimado/a {nombre_estudiante},\n\nSe ha negado su tutoria.\n\nDetalles de la solicitud:\nDebido a la siguiente razo: ' \
-                      f'{razon_denegacion}\n'
-            from_email = EMAIL_HOST_USER
-            recipient_list = [correo_estudiante]
+        subject = f'Solicitud de Tutoría'
+        message = f'Estimado/a {nombre_estudiante},\n\nSe ha rechazado su tutoria.\n\nDetalles de la solicitud:\n '\
+        f' \nInformación: {tutoria_info}\n'
+        from_email = EMAIL_HOST_USER
+        recipient_list = [correo_estudiante]
 
-            send_mail(subject, message, from_email, recipient_list)
-            return redirect('html/confirmacion_envio_email.html', {'accion': 'denegada'})
+        send_mail(subject, message, from_email, recipient_list)
+        messages.success(request, 'Correo enviado exitosamente.')
+        #return redirect('html/confirmacion_envio_email.html')
 
     return render(request, 'html/aceptar_tutoria.html')
 
