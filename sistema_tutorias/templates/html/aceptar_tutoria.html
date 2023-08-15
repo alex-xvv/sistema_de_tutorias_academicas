@@ -56,13 +56,17 @@
         </div>
         <div class="modal-body">
           <!-- Contenido del formulario -->
-          <form method="post">
+          <form method="post" action="{% url 'enviar_solicitud_estudiante' %}">
             {% csrf_token %}
             <div class="form-group">
               <label>Horas disponibles: </label>
               <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
+              <input type="hidden" id="correo_estudiante" name="correo_estudiante" value="{{ e.usuario }}">
             </div>
-
+            <div class="form-group">
+              <label for="txtnombre">Nombre Estudiante:</label>
+              <input type="text" class="form-control" id="txtnombre" name="txtnombre" required>
+            </div>
             <div class="form-group">
               <label for="txthora">Hora de la Tutoría:</label>
               <input type="text" class="form-control" id="txthora" name="txthora" required>
@@ -90,20 +94,24 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="tutoriaModalLabel">Denegar Tutoría</h5>
+          <h5 class="modal-title" id="tutoriaModalLabel1">Denegar Tutoría</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <!-- Contenido del formulario -->
-          <form method="post">
+          <form method="post" action="{% url 'enviar_solicitud_estudiante' %}">
             {% csrf_token %}
             <div class="form-group">
               <label>Horas disponibles: </label>
               <img src="/static/img/ejemplohora.png" alt="Horas Disponibles" class="img-fluid">
+              <input type="hidden" id="correo_estudiante1" name="correo_estudiante1" value="{{ e.usuario }}">
             </div>
-
+            <div class="form-group">
+              <label for="txtnombre1">Nombre Estudiante:</label>
+              <input type="text" class="form-control" id="txtnombre1" name="txtnombre1" required>
+            </div>
             <div class="form-group">
               <label for="txttutoria">Comentario de la razón de Denegación de Tutoría:</label>
               <textarea class="form-control" id="txttutoria" name="txttutoria" required></textarea>
