@@ -21,6 +21,17 @@ from django.http import HttpResponse
 from proyecto_tutorias.settings import EMAIL_HOST_USER
 from .forms import *
 
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
+from io import BytesIO
+from urllib.request import urlopen  # Importa urlopen desde urllib.request
+
+
+
 # Vistas de las diferentes paginas del proyecto.
 def is_docente(user):
     return user.groups.filter(name='Docente').exists()
@@ -252,12 +263,6 @@ def aceptar_tutoria(request):
     return HttpResponse("No tienes permisos para acceder a esta página.")
 
     #return render(request, 'html/aceptar_tutoria.html', {'es_docente': True, "estudiante": estudiante})
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 8b7940db5792b8024cf9b082dbbd8331855bb235
 @login_required
 def enviar_solicitud_aceptada_estudiante(request):
     #estudiante = Estudiante.objects.all()
@@ -361,3 +366,34 @@ def enviar_solicitud(request):
 
 def confirmacion_envio_email(request):
     return render(request, 'html/confirmacion_envio_email.html')
+
+def fetch_resources(uri, rel):
+    # Función de callback para cargar recursos como imágenes
+    if uri.startswith("/media/"):  # Reemplaza esto con la ruta correcta
+        path = uri.replace("/media/", "")  # Ajusta la ruta según tu estructura de archivos
+        return path
+    return uri
+
+def generar_pdf(request):
+    template = get_template('html/generar_pdf.html')
+    context = {
+        'tutorias': Tutoria.objects.all()
+    }
+    
+    html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="registroacademico.pdf"'
+    # Configura la ruta de imágenes (PYTHON_HTML2PDF_IMAGES)
+    pdf_options = {
+        "images": True,
+    }
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=fetch_resources, **pdf_options)
+
+     # create a pdf
+    #pisa_status = pisa.CreatePDF(
+    #    html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar PDF', content_type='text/plain')           
+    return response
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento a imprimir</title>
+    <style>
+        /* Estilos para la tabla */
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+      
+        th, td {
+          padding: 10px;
+          border: 1px solid #000;
+          text-align: left;
+          text-align: center;
+        }
+      
+        th {
+          background-color: #1e4ad9;
+          color: white;
+        }
+      
+        tbody tr:hover {
+          background-color: #f5f5f5;
+        }
+      
+        /* Estilos para el encabezado */
+        thead {
+          font-weight: bold;
+        }
+      
+        /* Estilos para el cuerpo de la tabla */
+        tbody {
+          font-weight: normal;
+        }
+      </style>
+</head>
+<body>
+    
+{% block content %}
+<h2 style="text-align: center;">UNIVERSIDAD NACIONAL DE LOJA</h2>
+<h2 style="text-align: center;">COMISION  DE ARTICULACION DE LAS FUNCIONES SUSTANTIVAS</h2>
+<h2 style="text-align: center;">FORMATO PARA EL REGISTRO DE LAS ACTIVIDADES DE TUTORÍA ACADÉMICA</h2>
+<!--TITULOS-->
+<h4>Facultad: <span class="span-highlight">Facultad de la Energía las industrias y los Recursos no Renovables</span> .</h4>
+<h4>Carrera: <span class="span-highlight">Computación</span></h4>
+{% if tutorias %}
+<h4>Asignatura: <span class="span-highlight">{{ tutorias.0.asignatura.nombre }}</span></h4>
+{% endif %}
+<h4>Periodo academico: <span class="span-highlight">Abril 2023 - Septiembre 2023</span> .</h4>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nro.</th>
+            <th>Estudiante</th>
+            <th>Asignatura</th>
+            <th>Horario</th>
+            <th>Tema</th>
+            <th>Modalidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tutoria in tutorias %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{tutoria.estudiante.nombre}}</td>
+            <td>{{tutoria.asignatura.nombre}}</td>
+            <td>{{tutoria.horario}}</td>
+            <td>{{tutoria.tema}}</td>
+            <td>{{tutoria.modalidad}}</td>
+            <!-- <td><img src="{{ tutoria.firma.url }}"></td> -->
+        </tr>
+        {% empty %}
+        <h6>No hay solicitues de tutorias</h6>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+</body>
+</html>

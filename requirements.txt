@@ -8,3 +8,4 @@ typing-extensions==4.7.1
 wheel==0.34.2
 crispy-bootstrap5==0.7
 Pillow==10.0.0
+xhtml2pdf==0.2.11

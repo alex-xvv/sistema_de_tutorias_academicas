@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-g-s)tfmmru6rs7i*2vhyn+^ju7fb6ct#!7h#tu5gt(kc!h&)bp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 MESSAGE_STORAGE= "django.contrib.messages.storage.cookie.CookieStorage"
 
 # Application definition
@@ -127,3 +127,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "sdetutorias@gmail.com"
 EMAIL_HOST_PASSWORD = "hnlohetxsjpzsqgs"
+
+CSRF_TRUSTED_ORIGINS = ['https://pis2.azurewebsites.net']

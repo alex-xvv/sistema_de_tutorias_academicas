@@ -28,6 +28,7 @@ urlpatterns = [
     path('enviar_solicitud/', views.enviar_solicitud, name='enviar_solicitud'),
     path('enviar_solicitud_aceptada_estudiante/',views.enviar_solicitud_aceptada_estudiante, name='enviar_solicitud_aceptada_estudiante'),
     path('enviar_solicitud_rechazada_estudiante/',views.enviar_solicitud_rechazada_estudiante, name='enviar_solicitud_rechazada_estudiante'),
+    path('generar_pdf/', views.generar_pdf, name='generar_pdf')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
